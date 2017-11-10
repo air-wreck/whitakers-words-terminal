@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
   /* extract the translation from the HTML reply */
   char *intro = strstr(response, "<pre>") + 5;
   char *end   = strstr(response, "</pre>");
-  printf("%.*s\n", end - intro, intro);
+  printf("%.*s\n", (int)(end - intro), intro);
 
   close(sockfd);
   return 0;
