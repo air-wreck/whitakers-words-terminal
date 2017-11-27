@@ -16,16 +16,22 @@
 #define MAX_RES_LEN 4096 /* I assume that no translation will exceed this */
 
 void error(char *msg) {
-  perror(msg);
+  fprintf(stderr, "%s\n", msg);
   exit(0);
 }
 
 int main(int argc, char *argv[]) {
 
+  /* default to a Latin search -- only search English if [-E] given */
+  int is_latin = 1;
+  int opt;
+
   /* give a friendly warning if used incorrectly */
-  if (argc == 1 || argc > 3 || (argc == 3 && strncmp(argv[1], "-E", 2))) {
-    printf("usage: %s <latin>\n       %s -E <english>\n", argv[0], argv[0]);
-    return 0;
+  while ((opt = getopt(argc, argv, "E")) != -1) {
+    switch(opt) {
+      case 'E': is_latin = 0; break;
+      default: fprintf(stderr, "Usage: %s [-E] [word]\n", argv[0]); return 0;
+    }
   }
 
   /* specify where/how we want to connect */
@@ -37,11 +43,10 @@ int main(int argc, char *argv[]) {
 
   /* prepare HTTP GET requests */
   memset(message, 0, sizeof(message));
-  if (argc == 2) {
+  if (is_latin)
     sprintf(message, "GET /cgi-bin/wordz.pl?keyword=%s HTTP/1.0\r\n\r\n", argv[1]);
-  } else {
+   else
     sprintf(message, "GET /cgi-bin/wordz.pl?english=%s HTTP/1.0\r\n\r\n", argv[2]);
-  }
 
   /* open a socket */
   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
