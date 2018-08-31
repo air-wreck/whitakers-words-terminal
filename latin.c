@@ -62,7 +62,8 @@ int main(int argc, char *argv[]) {
   memcpy(&serv_addr.sin_addr.s_addr, server->h_addr, server->h_length);
 
   /* connect to Whitaker's Words */
-  if (connect(sockfd, (const struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+  if (connect(sockfd, (const struct sockaddr *) &serv_addr,
+              sizeof(serv_addr)) < 0)
     error("could not connect");
 
   /* send out request */
